@@ -5,33 +5,84 @@
 \usepackage{upquote}
 \usepackage{textcomp}
 \usepackage[pdftex]{graphicx}
-\graphicspath{{cover/}}
+\graphicspath{{Cover/}}
 \usepackage{pdfpages}
 \usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage{amsmath}
+\usepackage{listings}
 \title{Концепции, Техники и Модели Компьютерного Программирования}
 \date{05.06.2003}
 \author{ПИТЕР ВАН РОЙ\thanks{Email: pvr@info.ucl.ac.be, Web: http://www.info.ucl.ac.be/\textasciitilde pvr}\\Лувенский католический университет (Лувен-Ла-Нёв)\\Шведский Институт Компьютерных Наук\\ СЕИФ ХАРИДИ\thanks{Email: seif@it.kth.se, Web: http://www.it.kth.se/\textasciitilde seif}\\Лувенский католический университет (Лувен-Ла-Нёв)\\Шведский Институт Компьютерных Наук}
 
 \begin{document}
+\lstdefinestyle{customoz}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+%  frame=L,
+  xleftmargin=\parindent,
+  language=Oz,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
 
-\newcommand{\listbegin} {\hrule}
-\newcommand{\listend} {\hrule\vspace{0.1cm}}
-
-
-%\thispagestyle{empty}
-%\includepdf[pages={1}]{cover/first_page.pdf}
-
-
-
-%\pagestyle{headings}
+\lstset{language=Oz, mathescape=true, style=customoz}
 
 
 \renewcommand {\contentsname} {Оглавление}
 \renewcommand {\chaptername} {Глава}
+\includepdf{Cover.pdf}
 
+{\let\newpage\relax\maketitle}
 \maketitle
-
 \tableofcontents
+$$
+\langle s \rangle \equiv \begin{cases}
+  \text{\lstinline!local Max in!}\\
+  \text{~~~~ \lstinline!local A in!}\\
+  \text{~~~~~~~~ \lstinline!local B in!}\\
+  \text{~~~~~~~~~~~~ \lstinline!local C in!}\\
+  \langle s \rangle _1 \equiv \begin{cases}
+    \text{~~~~~~~~\lstinline[mathescape=false]!Max=proc \{$ X Y Z\}!}\\
+    \langle s \rangle _3 \equiv \begin{cases}
+      \text{~~~~~~~~~~~~\lstinline!local T in!}\\
+      \text{~~~~~~~~~~~~~~~~\lstinline!T=(X>=Y)!}\\
+      \text{~~~~~~~~~} \langle s \rangle _4 \equiv \text{\lstinline!if T then Z=X else Z=Y end!}\\
+      \text{~~~~~~~~~~\lstinline!end!}
+    \end{cases}\\
+    \text{~~~~~~~~~~~~\lstinline!end!}\\
+    \text{~~~~~~~~\lstinline!A=3!}\\
+    \text{~~~~~~~~\lstinline!B=5!}\\
+    \langle s \rangle _2 \equiv \text{\lstinline!Max \{A B C\}!}\\
+  \end{cases}\\
+  \text{~~~~~~~~~~~~\lstinline!end!}\\
+  \text{~~~~~~~~\lstinline!end!}\\
+  \text{~~~~\lstinline!end!}\\
+  \text{\lstinline!end!}
+  \end{cases}
+$$
+
+\begin{lstlisting}
+  fun {Fact N}
+   if N =< 0 then 1 else N*{Fact N-1} end
+end
+ 
+fun {Comb N K}
+   {Fact N} div ({Fact K} * {Fact N-K}) % integers can't overflow in Oz (unless no memory is left)
+end
+ 
+fun {SumList List}
+   case List of nil then 0 $\frac{3}{4}$
+   [] H|T then H+{SumList T} % pattern matching on lists
+   end
+end
+\end{lstlisting}
+
+kjdkasdjfksadjf ~~ dkjfsakjd dkjfkljds akdjfkdsj kkkk
+
 
 \input{literature}
 \end{document}
