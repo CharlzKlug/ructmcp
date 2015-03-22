@@ -574,61 +574,93 @@ end
 
 Вместо сложения \lstinline|H1+H2| эта версия выполняет \lstinline|{Op H1 H2}|.
 
-Разновидности треугольника Паскаля.
+\subsection{Разновидности треугольника Паскаля}
 
-Определим некоторые функции для того, чтобы испытать GenericPascal. Для получения исходного треугольника Паскаля мы можем определить функцию сложения:
+Определим некоторые функции для того, чтобы испытать \lstinline|GenericPascal|. Для получения исходного треугольника Паскаля мы можем определить функцию сложения:
 
+\begin{lstlisting}
 fun {Add X Y} X+Y end
+\end{lstlisting}
 
-Теперь мы можем запустить {GenericPascal Add 5}. 4 В результате мы получим всё ту же пятую строку. С помощью GenericPascal мы можем определить FastPascal:
+\VerbatimFootnotes
+Теперь мы можем запустить \lstinline|{GenericPascal Add 5}|.\footnote{Мы могли бы вызвать \verb|{Browse {GenericPascal Number.'+' 5}}|, поскольку операция сложения  '\lstinline|+|' --- это часть модуля \lstinline|Number|. Но в этой главе модули не упоминаются.} В результате мы получим всё ту же пятую строку. С помощью \lstinline|GenericPascal| мы можем определить \lstinline|FastPascal|:
 
-4 Мы могли бы вызвать {GenericPascal Number. '+ ' 5}, поскольку операция сложения  '+ ' - это часть модуля Number. Но в этой главе модули не упоминаются.
-
+\begin{lstlisting}
 fun {FastPascal N} {GenericPascal Add N} end
+\end{lstlisting}
 
 Определим другую функцию:
 
+\begin{lstlisting}
 fun {Xor X Y} if X==Y then 0 else 1 end end
+\end{lstlisting}
 
-Эта функция реализует операцию исключающее ИЛИ, определяемую так:
+Эта функция реализует операцию \emph{исключающее ИЛИ}, определяемую так:
 
-X Y {Xor X Y}
-0 0 0
-0 1 1
-1 0 1
-1 1 0
+\begin{center}
+\begin{tabular}{ccc}
+\lstinline|X| & \lstinline|Y| & \lstinline|{Xor X Y}| \\
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\end{tabular}
+\end{center}
 
-Исключающее ИЛИ позволяет вычислить чётность каждого числа в треугольнике Паскаля, то есть, является ли число чётным или нечётным. Сами числа не вычисляются. Вызов {GenericPascal Xor N} даст такой результат:
+Исключающее ИЛИ позволяет вычислить \emph{чётность} каждого числа в треугольнике Паскаля, то есть, является ли число чётным или нечётным. Сами числа не вычисляются. Вызов \lstinline|{GenericPascal Xor N}| даст такой результат:
 
-1
-1
-1
-1
-1
-1
-1
-0
-1
-1
-0
-1
-1
-0
-0
-1
-0
-0
-1
-1
-1
-1
-0
-1
-0
-1
-0
-1
-. . . . . . . . . . . . . .
+\begin{tikzpicture}
+  \node at (7, 8) {1};
+
+  \node at (6, 7) {1};
+  \node at (8, 7) {1};
+
+  \node at (5, 6) {1};
+  \node at (7, 6) {0};
+  \node at (9, 6) {1};
+
+  \node at (4, 5) {1};
+  \node at (6, 5) {1};
+  \node at (8, 5) {1};
+  \node at (10, 5) {1};
+
+  \node at (3, 4) {1};
+  \node at (5, 4) {0};
+  \node at (7, 4) {0};
+  \node at (9, 4) {0};
+  \node at (11, 4) {1};
+
+  \node at (2, 3) {1};
+  \node at (4, 3) {1};
+  \node at (6, 3) {0};
+  \node at (8, 3) {0};
+  \node at (10, 3) {1};
+  \node at (12, 3) {1};
+
+  \node at (1, 2) {1};
+  \node at (3, 2) {0};
+  \node at (5, 2) {1};
+  \node at (7, 2) {0};
+  \node at (9, 2) {1};
+  \node at (11, 2) {0};
+  \node at (13, 2) {1};
+
+  \node at (0, 1) {$\cdot$};
+  \node at (1, 1) {$\cdot$};
+  \node at (2, 1) {$\cdot$};
+  \node at (3, 1) {$\cdot$};
+  \node at (4, 1) {$\cdot$};
+  \node at (5, 1) {$\cdot$};
+  \node at (6, 1) {$\cdot$};
+  \node at (7, 1) {$\cdot$};
+  \node at (8, 1) {$\cdot$};
+  \node at (9, 1) {$\cdot$};
+  \node at (10, 1) {$\cdot$};
+  \node at (11, 1) {$\cdot$};
+  \node at (12, 1) {$\cdot$};
+  \node at (13, 1) {$\cdot$};
+  \node at (14, 1) {$\cdot$};
+\end{tikzpicture}
 
 Некоторые другие функции даны в упражнениях.
 

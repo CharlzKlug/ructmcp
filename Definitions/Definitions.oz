@@ -18,13 +18,6 @@ fun {Pascal N}
    end
 end
 
-fun {FastPascal N}
-   if N==1 then [1]
-   else L in
-      L={FastPascal N-1}
-      {AddList {ShiftLeft L} {ShiftRight L}}
-   end
-end
 
 fun lazy {Ints N}
    N|{Ints N+1}
@@ -62,18 +55,26 @@ fun {PascalList2 N Row}
 end
 
 fun {OpList Op L1 L2}
-case L1 of H1|T1 then
-case L2 of H2|T2 then
-{Op H1 H2}|{OpList Op T1 T2}
-end
-else nil end
+   case L1 of H1|T1 then
+      case L2 of H2|T2 then
+         {Op H1 H2}|{OpList Op T1 T2}
+      end
+   else nil end
 end
 
 
 fun {GenericPascal Op N}
-if N==1 then [1]
-else L in
-L={GenericPascal Op N-1}
-{OpList Op {ShiftLeft L} {ShiftRight L}}
+   if N==1 then [1]
+   else L in
+      L={GenericPascal Op N-1}
+      {OpList Op {ShiftLeft L} {ShiftRight L}}
+   end
 end
-end
+
+fun {Add X Y} X+Y end
+
+fun {FastPascal N} {GenericPascal Add N} end
+
+fun {Xor X Y} if X==Y then 0 else 1 end end
+
+{Browse {GenericPascal Xor 5}}
