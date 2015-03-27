@@ -112,11 +112,16 @@ end
 
 declare
 C={NewCell 0}
-thread I in
-   I=@C
-   C:=I+1
+L={NewLock}
+thread
+   lock L then I in
+      I=@C
+      C:=I+1
+   end
 end
-thread J in
-   J=@C
-   C:=J+1
+thread
+   lock L then J in
+      J=@C
+      C:=J+1
+   end
 end
