@@ -96,7 +96,27 @@ fun {FastPascal N}
    {GenericPascal Add N}
 end
 
+declare
+fun {NewCounter}
+   C Bump Read in
+   C={NewCell 0}
+   fun {Bump}
+      C:=@C+1
+      @C
+   end
+   fun {Read}
+      @C
+   end
+   counter(bump:Bump read:Read)
+end
 
-{Browse {Bump}}
-
-{Browse {Read}}
+declare
+C={NewCell 0}
+thread I in
+   I=@C
+   C:=I+1
+end
+thread J in
+   J=@C
+   C:=J+1
+end
