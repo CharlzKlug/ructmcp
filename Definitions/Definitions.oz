@@ -125,3 +125,8 @@ thread
       C:=J+1
    end
 end
+
+fun {SumList L}
+   case L of X|L1 then X+{SumList L1}
+   else 0 end
+end
