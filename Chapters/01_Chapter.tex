@@ -581,7 +581,7 @@ fun {Add X Y} X+Y end
 \end{lstlisting}
 
 \VerbatimFootnotes
-Теперь мы можем запустить \lstinline|{GenericPascal Add 5}|.\footnote{Мы могли бы вызвать \verb|{Browse {GenericPascal Number.'+' 5}}|, поскольку операция сложения  '\lstinline|+|' --- это часть модуля \lstinline|Number|. Но в этой главе модули не упоминаются.} В результате мы получим всё ту же пятую строку. С помощью \lstinline|GenericPascal| мы можем определить \lstinline|FastPascal|:
+Теперь мы можем запустить \lstinline|{GenericPascal Add 5}|.\footnote{Мы могли бы вызвать \verb|{Browse {GenericPascal Number.|$'$\verb|+|$'$\verb| 5}}|, поскольку операция сложения  $'$\lstinline|+|$'$ --- это часть модуля \lstinline|Number|. Но в этой главе модули не упоминаются.} В результате мы получим всё ту же пятую строку. С помощью \lstinline|GenericPascal| мы можем определить \lstinline|FastPascal|:
 
 \begin{lstlisting}
 fun {FastPascal N} {GenericPascal Add N} end
