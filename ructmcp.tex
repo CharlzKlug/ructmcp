@@ -63,31 +63,6 @@
 \part{Общие Модели Вычислений}
 \input{Chapters/02_Chapter}
 
-$$
-\langle s \rangle \equiv \begin{cases}
-  \text{\lstinline!local Max in!}\\
-  \text{~~~~ \lstinline!local A in!}\\
-  \text{~~~~~~~~ \lstinline!local B in!}\\
-  \text{~~~~~~~~~~~~ \lstinline!local C in!}\\
-  \langle s \rangle _1 \equiv \begin{cases}
-    \text{~~~~~~~~\lstinline[mathescape=false]!Max=proc \{$ X Y Z\}!}\\
-    \langle s \rangle _3 \equiv \begin{cases}
-      \text{~~~~~~~~~~~~\lstinline!local T in!}\\
-      \text{~~~~~~~~~~~~~~~~\lstinline!T=(X>=Y)!}\\
-      \text{~~~~~~~~~} \langle s \rangle _4 \equiv \text{\lstinline!if T then Z=X else Z=Y end!}\\
-      \text{~~~~~~~~~~\lstinline!end!}
-    \end{cases}\\
-    \text{~~~~~~~~~~~~\lstinline!end!}\\
-    \text{~~~~~~~~\lstinline!A=3!}\\
-    \text{~~~~~~~~\lstinline!B=5!}\\
-    \langle s \rangle _2 \equiv \text{\lstinline!Max \{A B C\}!}\\
-  \end{cases}\\
-  \text{~~~~~~~~~~~~\lstinline!end!}\\
-  \text{~~~~~~~~\lstinline!end!}\\
-  \text{~~~~\lstinline!end!}\\
-  \text{\lstinline!end!}
-  \end{cases}
-$$
 
 \begin{lstlisting}
   fun {Fact N}
