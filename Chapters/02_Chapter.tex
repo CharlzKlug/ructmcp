@@ -1777,7 +1777,7 @@ y' = 10, y = 5, a = 3, c\} )
 
 В хранилище по прежнему имеется привязка $y'=10$. Но $y'$ не ссылается семантическим стеком, поэтому эта привязка не играет никакой роли при выполнении программы.
 
-\subsection{Оптимизация последнего вызова}
+\subsection{Оптимизация последнего вызова}\label{subsection:last_call_optimization}
 
 Рассмотрим рекурсивную процедуру с единственным вызовом, который находится на последнем месте в процедуре. Такие процедуры мы называем процедурами с \emph{хвостовой рекурсией (tail-recursive)}. Наша абстрактная машина выполняет процедуру хвостовой рекурсии в стеке с неизменным размером. А всё потому, что наша абстрактная машина выполняет \emph{оптимизацию последнего вызова}. Иногда подобный подход называют \emph{оптимизацией хвостовой рекурсии}, но, эта терминология менее точна, поскольку оптимизация работает для любого последнего вызова, а не только для вызовов с хвостовой рекурсией (смотрите Упражнения). Рассмотрим следующую процедуру:
 
@@ -1862,22 +1862,6 @@ y' = 10, y = 5, a = 3, c\} )
 Работа с этим маленьким хранилищем даст тот же результат что и раньше!
 
 С точки зрения семантики следует что запущенной программе нужны только информация из семантического стека и часть хранилища, доступная из семантического стека. Частичное значение \emph{доступно (reachable)} если на него ссылается оператор семантического стека или другое доступное частичное значение. Семантический стек и доступная часть хранилища вместе называются \emph{активной памятью}. Остальная часть хранилища может быть безопасно переработана, то есть, использованная память может быть повторно использована для других целей. Поскольку размер активной памяти из примера \lstinline|Loop10| привязан к малой константе, то возможен бесконечный цикл без расходования системной памяти.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 \subsubsection{Цикл использования памяти}
 
@@ -2325,49 +2309,128 @@ end
 
 В целом, вложенные функции вычисляются \emph{до} функций, в которые они вложены. Если их несколько, то тогда они вычисляются в том порядке, в котором они появляются в программе.
 
-Вызовы функции в структурах данных
+\subsubsection{Вызовы функции в структурах данных}
 
 Есть ещё одно правило о вызовах функций, которое следует запомнить. Это правило касается вызова внутри структуры данных (запись, кортеж или список). Вот пример:
 
+\begin{lstlisting}
 Ys={F X}|{Map Xr F}
+\end{lstlisting}
 
-В этом случае трансляция помещает вложенные вызовы после оператора привязки:
+В этом случае трансляция помещает вложенные вызовы \emph{после} оператора привязки:
 
+\begin{lstlisting}
 local Y Yr in
-Ys=Y|Yr
-{F X Y}
-{Map Xr F Yr}
+   Ys=Y|Yr
+   {F X Y}
+   {Map Xr F Yr}
 end
+\end{lstlisting}
 
-Таким образом, рекурсивный вызов оказывается последним. В Разделе 2.4.6 объяснена важность этого шага для эффективности исполнения. Полная функция Map определяется так:
+Таким образом, рекурсивный вызов оказывается последним. В Разделе~\ref{subsection:last_call_optimization} объяснена важность этого шага для эффективности исполнения. Полная функция \lstinline|Map| определяется так:
 
+\begin{lstlisting}
 fun {Map Xs F}
-case Xs
-of nil then nil
-[] X|Xr then {F X}|{Map Xr F}
+   case Xs
+   of nil then nil
+   [] X|Xr then {F X}|{Map Xr F}
+   end
 end
-end
+\end{lstlisting}
 
-Map применяет функцию F для всех элементов списка и возвращает результат. Вот пример вызова:
+\lstinline|Map| применяет функцию \lstinline|F| для всех элементов списка и возвращает результат. Вот пример вызова:
 
-{Browse {Map [1 2 3 4] fun { X} X*X end}}
+\begin{lstlisting}[mathescape=false]
+{Browse {Map [1 2 3 4] fun {$ X} X*X end}}
+\end{lstlisting}
 
-Будет напечатано [1 4 9 16]. Определение Map будет транслироваться в язык ядра таким образом:
+Будет напечатано \lstinline|[1 4 9 16]|. Определение \lstinline|Map| будет транслироваться в язык ядра таким образом:
 
+\begin{lstlisting}[mathescape=false]
 proc {Map Xs F ?Ys}
-case Xs of nil then Ys=nil
-else case Xs of X|Xr then
-local Y Yr in
-Ys=Y|Yr
-{F X Y}
-{Map Xr F Yr}
+   case Xs of nil then Ys=nil
+   else case Xs of X|Xr then
+           local Y Yr in
+              Ys=Y|Yr
+              {F X Y}
+              {Map Xr F Yr}
+           end
+        end end
 end
-end end
-end
+\end{lstlisting}
 
-Переменная потока данных Yr используется в качестве "хранителя" результата в рекурсивном вызове {Map Xr F Yr}. Такой приём позволяет помещать рекурсивный вызов в последнее место. В нашей модели это означает, что рекурсия исполняется с той же самой эффективностью по месту и времени, что и такие итеративные конструкции, как loop.
+Переменная потока данных \lstinline|Yr| используется в качестве ``хранителя'' результата в рекурсивном вызове \lstinline|{Map Xr F Yr}|. Такой приём позволяет помещать рекурсивный вызов в последнее место. В нашей модели это означает, что рекурсия исполняется с той же самой эффективностью по месту и времени, что и такие итеративные конструкции, как цикл \lstinline|while|.
 
-Таблица 2.8: Интерактивный синтаксис операторов
+
+\subsection{Интерактивный интерфейс (оператор declare)}
+
+\begin{table}
+  \begin{tabular}{|lrl|}
+    \hline
+    \lstinline|$\langle$interStatement$\rangle$| & \lstinline|::=| & \lstinline|$\langle$statement$\rangle$|\\
+    & \lstinline!|!& \lstinline|declare { $\langle$declarationPart$\rangle$ }+ [ $\langle$interStatement$\rangle$ ]|\\
+    & \lstinline!|!& \lstinline|declare { $\langle$declarationPart$\rangle$ }+ in $\langle$interStatement$\rangle$|\\
+    \lstinline|$\langle$declarationPart$\rangle$| & \lstinline|::=| & \lstinline!$\langle$varibale$\rangle$ | $\langle$pattern$\rangle$ $'$=$'$ $\langle$expression$\rangle$ | $\langle$statement$\rangle$!\\
+    \hline
+  \end{tabular}
+\caption{Интерактивный синтаксис операторов}
+\label{table:interactive_statement_syntax}
+\end{table}
+
+\begin{figure}
+  \begin{tikzpicture}
+    \node [shape=rectangle, draw] (first_browse) at (0, 5) {``Browse''};
+    \node [shape=rectangle, draw] (first_x) at (0, 4) {``X''};
+    \node [shape=rectangle, draw] (first_y) at (0, 3) {``Y''};
+    \draw node[
+      append after command={[rounded corners=5pt](firstprocvalue.west)|-(firstprocvalue.north)},
+      append after command={[rounded corners=5pt](firstprocvalue.north)-|(firstprocvalue.east)},
+      append after command={[rounded corners=5pt](firstprocvalue.east)|-(firstprocvalue.south)},
+      append after command={[rounded corners=5pt](firstprocvalue.south)-|(firstprocvalue.west)}] 
+    (firstprocvalue) at (4, 5) {значение процедуры};
+    \node (firstx1) at (2.5,4) {$x_1$};
+    \node [shape=rectangle, draw] at (4.5,4) {не привязано};
+    \node (firstx2) at (2.5,3) {$x_2$};
+    \node [shape=rectangle, draw] at (4.5,3) {не привязано};
+    \draw (1.7,5.5) -- (1.7,2.5) -- (6.3, 2.5) -- (6.3, 5.5) -- (1.7, 5.5);
+    \draw [->] (first_browse) -- (firstprocvalue);
+    \draw [->] (first_x) -- (firstx1);
+    \draw [->] (first_y) -- (firstx2);
+    \node at (2.2, 2) {Результат первого \lstinline|declare X Y|};
+
+    \node [shape=rectangle, draw] (second_browse) at (0, 1) {``Browse''};
+    \node [shape=rectangle, draw] (second_x) at (0, -2) {``X''};
+    \node [shape=rectangle, draw] (second_y) at (0, -3) {``Y''};
+    \draw node[
+      append after command={[rounded corners=5pt](secondprocvalue.west)|-(secondprocvalue.north)},
+      append after command={[rounded corners=5pt](secondprocvalue.north)-|(secondprocvalue.east)},
+      append after command={[rounded corners=5pt](secondprocvalue.east)|-(secondprocvalue.south)},
+      append after command={[rounded corners=5pt](secondprocvalue.south)-|(secondprocvalue.west)}] 
+    (secondprocvalue) at (4, 1) {значение процедуры};
+    \node (secondx1) at (2.5,0) {$x_1$};
+    \node [shape=rectangle, draw] at (4.5,0) {не привязано};
+    \node (secondx2) at (2.5,-1) {$x_2$};
+    \node [shape=rectangle, draw] at (4.5,-1) {не привязано};
+    \node (secondx3) at (2.5,-2) {$x_3$};
+    \node [shape=rectangle, draw] at (4.5,-2) {не привязано};
+    \node (secondx4) at (2.5,-3) {$x_4$};
+    \node [shape=rectangle, draw] at (4.5,-3) {не привязано};
+    \draw (1.7,1.5) -- (1.7,-3.5) -- (6.3, -3.5) -- (6.3, 1.5) -- (1.7, 1.5);
+    \draw [->] (second_browse) -- (secondprocvalue);
+    \draw [->] (second_x) -- (secondx3);
+    \draw [->] (second_y) -- (secondx4);
+    \node at (2.2, -4) {Результат второго \lstinline|declare X Y|};
+
+  \end{tikzpicture}
+\caption{Определение глобальных переменных}
+\label{figure:declaring_global_variables}
+\end{figure}
+
+
+
+не привязано
+
+
 
 значение процедуры
 
@@ -2375,23 +2438,13 @@ end
 
 не привязано
 
-Результат первого declare X Y
-
-значение процедуры
-
 не привязано
 
 не привязано
 
-не привязано
 
-не привязано
 
-Результат второго declare X Y
 
-Рисунок 2.19: Определение глобальных переменных
-
-2.5.3 Интерактивный интерфейс (оператор declare)
 
 Система Mozart обладает интерактивным интерфейсом, позволяющим инкрементально вводить программные фрагменты и выполнять их так, как они были введены. Фрагменты соответствуют синтаксису интерактивных определений, как это показано в Таблице 2.8. Интерактивное определение (interactive statement) - это либо уже существующее определение, или новая форма, определение declare. Мы подразумеваем, что пользователь вводит интерактивные определения в систему один за другим. (В примерах, данных в этой книге, оператор declare часто опускается. Он должен добавляться если в примере определяются новые переменные.)
 
