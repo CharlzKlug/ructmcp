@@ -2674,48 +2674,69 @@ $($catch $\langle$x$\rangle$ then $\langle$s$\rangle$ end$,E)$
 
 Работа завершается, когда эта пара извлекается из семантического стека. То есть, оператор \lstinline|catch|, так же, как и \lstinline|skip|, ничего не выполняет.
 
-2.6.3 Полный синтаксис
+\subsection{Полный синтаксис}
 
-Таблица 2.10: Синтаксис исключения
+\begin{table}
+  \begin{tabular}{|lrl|}
+    \hline
+    \lstinline!$\langle$statement$\rangle$! & \lstinline!::=! & \lstinline!try $\langle$inStatement$\rangle$! \\
+    & & \lstinline![ catch $\langle$pattern$\rangle$ then $\langle$inStatement$\rangle$! \\
+      & & \lstinline!{ $'$[]$'$ $\langle$pattern$\rangle$ then $\langle$inStatement$\rangle$ } ]! \\
+    & & \lstinline![ finally $\langle$inStatement$\rangle$ ] end! \\
+    & \lstinline!|! & \lstinline!raise $\langle$inStatement$\rangle$ end! \\
+    & \lstinline!|! & \lstinline!...! \\
+    \lstinline!$\langle$inStatement$\rangle$! & \lstinline!::=! & \lstinline![ { $\langle$declarationPart$\rangle$ }+ in ] $\langle$statement$\rangle$! \\
+    \lstinline!$\langle$inExpression$\rangle$! & \lstinline!::=! & \lstinline![ { $\langle$declarationPart$\rangle$ }+ in ] [ $\langle$statement$\rangle$ ] $\langle$expression$\rangle$! \\
+    \hline
+  \end{tabular}
+\caption{Синтаксис исключения}
+\label{table:exception_syntax}
+\end{table}
 
-В Таблице 2.10 содержится синтаксис оператора try в полноценном языке. В операторе try содержится необязательный вариант finally. Вариант catch содержит необязательные последовательности шаблонов. Рассмотрим, как определяются эти расширения.
+В Таблице~\ref{table:exception_syntax} содержится синтаксис оператора \lstinline|try| в полноценном языке. В операторе \lstinline|try| содержится необязательный вариант \lstinline|finally|. Вариант \lstinline|catch| содержит необязательные последовательности шаблонов. Рассмотрим, как определяются эти расширения.
 
-Вариант finally
+\subsubsection{Вариант \lstinline|finally|}
 
-Оператор try может определить вариант finally, всегда выполняющийся вне зависимости от того, возникло или нет состояние исключения. Новый синтаксис:
+Оператор \lstinline!try! может определить вариант \lstinline!finally!, \emph{всегда} выполняющийся вне зависимости от того, возникло или нет состояние исключения. Новый синтаксис:
 
-tryhsi1 finallyhsi2 end
+\begin{lstlisting}
+try $\langle$s$\rangle_1$ finally $\langle$s$\rangle_2$ end
+\end{lstlisting}
 
 будет выполнена следующая трансляция в язык ядра:
 
-tryhsi1
-catchXthen
-hsi2
-raiseXend
+\begin{lstlisting}
+try $\langle$s$\rangle_1$
+catch X then
+   $\langle$s$\rangle_2$
+   raise X end
 end
-hsi2
+$\langle$s$\rangle_2$
+\end{lstlisting}
 
-(где идентификатор X является не свободным в s2). Возможно определить такую трансляцию, в которой s2 будет появляться только один раз; мы оставим эту задачу для читателя.
+(где идентификатор \lstinline!X! является не свободным в \lstinline!$\langle$s$\rangle_2$!). Возможно определить такую трансляцию, в которой \lstinline!$\langle$s$\rangle_2$! будет появляться только один раз; мы оставим эту задачу для читателя.
 
-Условие finally полезно при работе с внешними, по отношению к вычислительной модели, объектами. С помощью finally мы можем гарантировать некоторые "очищающие" действия, выполняемые над объектом, вне зависимости от появления или отсутствия исключений. Простым примером будет чтение файла. Предположим, что F - это открытый файл 11, процедура ProcessFile выполняет некоторые действия с файлом, а процедура CloseFile закрывает файл. Затем следующий фрагмент программы позволяет уверенно говорить о том, что F будет закрыт после завершения ProcessFile, вне зависимости от того, возникло или нет исключение:
+Условие \lstinline!finally! полезно при работе с внешними, по отношению к вычислительной модели, объектами. С помощью \lstinline!finally! мы можем гарантировать некоторые ``очищающие'' действия, выполняемые над объектом, вне зависимости от появления или отсутствия исключений. Простым примером будет чтение файла. Предположим, что \lstinline!F! --- это открытый файл\footnote{Обработку файлового ввода/вывода мы рассмотрим позже.}, процедура \lstinline!ProcessFile! выполняет некоторые действия с файлом, а процедура \lstinline!CloseFile! закрывает файл. Затем следующий фрагмент программы позволяет уверенно говорить о том, что \lstinline!F! будет закрыт после завершения \lstinline!ProcessFile!, вне зависимости от того, возникло или нет исключение:
 
-11 Обработку файлового ввода/вывода мы рассмотрим позже.
-
+\begin{lstlisting}
 try
-{ProcessFile F}
-finally{CloseFile F}end
+   {ProcessFile F}
+finally {CloseFile F} end
+\end{lstlisting}
 
-Заметьте, что этот оператор try не перехватывает исключение; он просто выполняет CloseFile как только завершится ProcessFile. Мы можем комбинировать и перехват исключения и выполнение последнего определения:
+Заметьте, что этот оператор \lstinline!try! не перехватывает исключение; он просто выполняет \lstinline!CloseFile! как только завершится \lstinline!ProcessFile!. Мы можем комбинировать и перехват исключения и выполнение последнего определения:
 
+\begin{lstlisting}
 try
-{ProcessFile F}
-catchXthen
-{Browse*** Exceptionwhen processing file ***}
-finally{CloseFile F}end
+   {ProcessFile F}
+catch X then
+   {Browse '*** Exception '#X#' when processing file ***'}
+finally {CloseFile F} end
+\end{lstlisting}
 
-Поведение подобно двум вложенным операторам try: внутренним является вариант clause, а внешним вариант finally.
+Поведение подобно двум вложенным операторам \lstinline!try!: внутренним является вариант \lstinline!clause!, а внешним вариант \lstinline!finally!.
 
-Сравнение с шаблоном
+\subsubsection{Сравнение с шаблоном}
 
 Оператор try может использовать сравнение с шаблоном для перехвата исключений, соответствующих заданному шаблону. Другие исключения переданы другому вложенному оператору try. Новый синтаксис:
 
