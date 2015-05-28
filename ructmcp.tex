@@ -65,23 +65,6 @@
 \input{Chapters/02_Chapter}
 
 
-\begin{lstlisting}
-  fun {Fact N}
-   if N =< 0 then 1 else N*{Fact N-1} end
-end
- 
-fun {Comb N K}
-   {Fact N} div ({Fact K} * {Fact N-K}) % integers can't overflow in Oz (unless no memory is left)
-end
- 
-fun {SumList List}
-   case List of nil then 0 $\frac{3}{4}$
-   [] H|T then H+{SumList T} % pattern matching on lists
-   end
-end
-\end{lstlisting}
-
-kjdkasdjfksadjf ~~ dkjfsakjd dkjfkljds akdjfkdsj kkkk
 
 \part{Приложения}
 \input{Chapters/literature}
