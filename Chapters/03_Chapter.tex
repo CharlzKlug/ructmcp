@@ -78,25 +78,23 @@
 
 Рисунок 3.2: 
 
-Декларативное программирование
 
-Описательно
 
-Программируемо
 
-Наблюдательно
 
-Определительно
 
-Декларативная модель
 
-Функциональное программирование
 
-Логическое программирование
 
-Рисунок 3.3: Классификация декларативного программирования
 
-Структура главы
+
+
+
+
+
+
+
+
 
 \begin{figure}
   \begin{tikzpicture}
@@ -117,6 +115,29 @@
   \caption{Структура главы}
   \label{figure:Chapter_structure}
 \end{figure}
+
+\begin{figure}
+  \begin{tikzpicture}
+  \node (declarative) [text width=3.125cm] at (0, 0)  {\footnotesize Декларативное программирование};
+  \node (descriptive) [above right=0.5cm of declarative] {\footnotesize Описательно};
+  \node (programmable) [below right=0.5cm of declarative] {\footnotesize Программируемо};
+  \node (observational) [above right=0.5cm of programmable] {\footnotesize Наблюдательно};
+  \node (definitional) [below right=0.5cm of programmable] {\footnotesize Определительно};
+  \node (decmod) [text width=3.125cm] [below=0.5cm of definitional] {\footnotesize Декларативная модель};
+  \node (funprog) [text width=3.125cm] [left=0.5cm of decmod] {\footnotesize Функциональное программирование};
+  \node (logprog) [text width=3.125cm] [left=0.5cm of funprog] {\footnotesize Логическое программирование};
+  \draw (declarative) -- (descriptive);
+  \draw (declarative) -- (programmable);
+  \draw (programmable) -- (observational);
+  \draw (programmable) -- (definitional);
+  \draw (definitional) -- (decmod);
+  \draw (definitional) -- (funprog);
+  \draw (definitional) -- (logprog);
+  \end{tikzpicture}
+  \caption{Классификация декларативного программирования}
+  \label{figure:Declarative_programming_classification}
+\end{figure}
+
 
 Эта глава описывает как писать практичные декларативные программы. Глава условно разделена на шесть частей, показанных на Рисунке 3.2. Первая часть определяет "декларативность". Вторая часть даёт обзор техник программирования. Третья и четвёртая части описывают процедурные абстракции и абстракции на данных. Пятая часть показывает как декларативное программирование взаимодействует с остальной средой вычисления. Шестая часть делает отступление для того, чтобы показать пользу декларативной модели и расположение декларативной модели по отношению к остальным моделям.
 
