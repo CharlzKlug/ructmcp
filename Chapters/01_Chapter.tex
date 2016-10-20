@@ -604,56 +604,49 @@ fun {Xor X Y} if X==Y then 0 else 1 end end
 Исключающее ИЛИ позволяет вычислить \emph{чётность} каждого числа в треугольнике Паскаля, то есть, является ли число чётным или нечётным. Сами числа не вычисляются. Вызов \lstinline|{GenericPascal Xor N}| даст такой результат:
 
 \begin{tikzpicture}
-  \node at (7, 8) {1};
+  \node (11) {1};
 
-  \node at (6, 7) {1};
-  \node at (8, 7) {1};
+  \node (21) [below left = 0.5cm of 11] {1};
+  \node (22) [below right = 0.5cm of 11] {1};
 
-  \node at (5, 6) {1};
-  \node at (7, 6) {0};
-  \node at (9, 6) {1};
+  \node (31) [below left = 0.5cm of 21] {1};
+  \node (32) [below right = 0.5cm of 21] {0};
+  \node (33) [below right = 0.5cm of 22] {1};
 
-  \node at (4, 5) {1};
-  \node at (6, 5) {1};
-  \node at (8, 5) {1};
-  \node at (10, 5) {1};
+  \node (41) [below left = 0.5cm of 31] {1};
+  \node (42) [below right = 0.5cm of 31] {1};
+  \node (43) [below right = 0.5cm of 32] {1};
+  \node (44) [below right = 0.5cm of 33] {1};
 
-  \node at (3, 4) {1};
-  \node at (5, 4) {0};
-  \node at (7, 4) {0};
-  \node at (9, 4) {0};
-  \node at (11, 4) {1};
+  \node (51) [below left = 0.5cm of 41] {1};
+  \node (52) [below right = 0.5cm of 41] {0};
+  \node (53) [below right = 0.5cm of 42] {0};
+  \node (54) [below right = 0.5cm of 43] {0};
+  \node (55) [below right = 0.5cm of 44] {1};
 
-  \node at (2, 3) {1};
-  \node at (4, 3) {1};
-  \node at (6, 3) {0};
-  \node at (8, 3) {0};
-  \node at (10, 3) {1};
-  \node at (12, 3) {1};
+  \node (61) [below left = 0.5cm of 51] {1};
+  \node (62) [below right = 0.5cm of 51] {1};
+  \node (63) [below right = 0.5cm of 52] {0};
+  \node (64) [below right = 0.5cm of 53] {0};
+  \node (65) [below right = 0.5cm of 54] {1};
+  \node (66) [below right = 0.5cm of 55] {1};
 
-  \node at (1, 2) {1};
-  \node at (3, 2) {0};
-  \node at (5, 2) {1};
-  \node at (7, 2) {0};
-  \node at (9, 2) {1};
-  \node at (11, 2) {0};
-  \node at (13, 2) {1};
+  \node (71) [below left = 0.5cm of 61] {1};
+  \node (72) [below right = 0.5cm of 61] {0};
+  \node (73) [below right = 0.5cm of 62] {1};
+  \node (74) [below right = 0.5cm of 63] {0};
+  \node (75) [below right = 0.5cm of 64] {1};
+  \node (76) [below right = 0.5cm of 65] {0};
+  \node (77) [below right = 0.5cm of 66] {1};
 
-  \node at (0, 1) {$\cdot$};
-  \node at (1, 1) {$\cdot$};
-  \node at (2, 1) {$\cdot$};
-  \node at (3, 1) {$\cdot$};
-  \node at (4, 1) {$\cdot$};
-  \node at (5, 1) {$\cdot$};
-  \node at (6, 1) {$\cdot$};
-  \node at (7, 1) {$\cdot$};
-  \node at (8, 1) {$\cdot$};
-  \node at (9, 1) {$\cdot$};
-  \node at (10, 1) {$\cdot$};
-  \node at (11, 1) {$\cdot$};
-  \node at (12, 1) {$\cdot$};
-  \node at (13, 1) {$\cdot$};
-  \node at (14, 1) {$\cdot$};
+  \node (81) [below left = 0.5cm of 71] {$\cdot$};
+  \node (82) [below right = 0.5cm of 71] {$\cdot$};
+  \node (83) [below right = 0.5cm of 72] {$\cdot$};
+  \node (84) [below right = 0.5cm of 73] {$\cdot$};
+  \node (85) [below right = 0.5cm of 74] {$\cdot$};
+  \node (86) [below right = 0.5cm of 75] {$\cdot$};
+  \node (87) [below right = 0.5cm of 76] {$\cdot$};
+  \node (88) [below right = 0.5cm of 77] {$\cdot$};
 \end{tikzpicture}
 
 Некоторые другие функции даны в упражнениях.
