@@ -867,43 +867,47 @@ $$P((i, \text{\lstinline!Ys!})) \equiv (\text{длина}(\text{\lstinline!Xs!})
 
 \subsubsection{Конструирование программ через следование типу}
 
-В предыдущих примерах списковых функций есть любопытное свойство. У них всех есть аргумент список, <List T>, определяемый так:
+В предыдущих примерах списковых функций есть любопытное свойство. У них всех есть аргумент список, \lstinline!$\langle$List T$\rangle$!, определяемый так:
 
-hList Ti
-::=
-nil
-|
-T '| ' hList Ti
+\begin{tabular}{lrl}
+  $\langle$List T$\rangle$ & \lstinline!::=! & \lstinline!nil! \\
+  & \lstinline!|! & \lstinline!T $'$|$'$ $\langle$List T$\rangle$!
+\end{tabular}
 
-и все они используют оператор case с такой формой:
+и все они используют оператор \lstinline!case! с такой формой:
 
+\begin{lstlisting}
 case Xs
-of nil then hexpri % Основной случай
-[] X|Xr then hexpri % Рекурсивный случай
+of nil then $\langle$expr$\rangle$ $\text{\% Основной случай}$
+[] X|Xr then $\langle$expr$\rangle$ $\text{\% Рекурсивный случай}$
 end
+\end{lstlisting}
 
 Что здесь происходит? Рекурсивная структура списковых функций точно следует рекурсивной структуре определения типа. Мы обнаружили, что это свойство почти всегда истинно для списковых функций.
 
-Мы можем использовать это свойство как вспомогательное для написания списковых функций. Это свойство может оказать огромную помощь когда определения типов становятся усложнёнными. Например, напишем функцию, подсчитывающую количество элементов во вложенном списке. Вложенный список - это список, в котором каждый элемент сам может быть списком, например, [[1 2] 4 nil [[5] 10]]. Мы определим тип <NestedList T> следующим образом:
+Мы можем использовать это свойство как вспомогательное для написания списковых функций. Это свойство может оказать огромную помощь когда определения типов становятся усложнёнными. Например, напишем функцию, подсчитывающую количество элементов во вложенном списке. \emph{Вложенный список} --- это список, в котором каждый элемент сам может быть списком, например, \lstinline![[1 2] 4 nil [[5] 10]]!. Мы определим тип \lstinline!$\langle$NestedList T$\rangle$! следующим образом:
 
-hNestedList Ti
-::=||nil
-hNestedList Ti '| ' hNestedList Ti
-T '| ' hNestedList Ti
+\begin{tabular}{lrl}
+  \lstinline!$\langle$NestedList T$\rangle$! & \lstinline!::=! & \lstinline!nil! \\
+  & \lstinline!|! & \lstinline!$\langle$NestedList T$\rangle$ $'$|$'$ $\langle$NestedList T$\rangle$! \\
+  & \lstinline!|! & \lstinline!T $'$|$'$ $\langle$NestedList T$\rangle$!
+\end{tabular}
 
-Для избежания двусмысленности, мы должны добавить условие: T не может быть ни nil, ни cons. Теперь напишем функцию {LengthL <NestedList T>}: <Int> подсчитывающую число элементов вложенного списка. Следуя определению типа мы получаем такой скелет:
+Для избежания двусмысленности, мы должны добавить условие для \lstinline!T!: а именно, \lstinline!T! не может быть ни \lstinline!nil!, ни \lstinline!cons!. Теперь напишем функцию \lstinline!{LengthL $\langle$NestedList T$\rangle$}: $\langle$Int$\rangle$! подсчитывающую число элементов вложенного списка. Следуя определению типа мы получаем такой скелет:
 
+\begin{lstlisting}
 fun {LengthL Xs}
-case Xs
-of nil then hexpri
-[] X|Xr andthen {IsList X} then
-hexpri % Рекурсивные вызовы для X и Xr
-[] X|Xr then
-hexpri % Рекурсивный вызов для Xr
+   case Xs
+   of nil then $\langle$expr$\rangle$
+   [] X|Xr andthen {IsList X} then
+      $\langle$expr$\rangle$ $\text{\% Рекурсивные вызовы для X и Xr}$
+   [] X|Xr then
+      $\langle$expr$\rangle$ $\text{\% Рекурсивный вызов для Xr}$
+   end
 end
-end
+\end{lstlisting}
 
-(В третьем случае мы явно не говорим {Not {IsList X}} поскольку это следует из отрицания второго случая.) Здесь {IsList X} - это функция, которая проверяет является ли X nil-ом или cons-ом:
+(В третьем случае мы явно не говорим \lstinline!{Not {IsList X}}! поскольку это следует из отрицания второго случая.) Здесь \lstinline!{IsList X}! --- это функция, которая проверяет является ли \lstinline!X! \lstinline!nil!-ом или \lstinline!cons!-ом:
 
 \begin{lstlisting}
 fun {IsCons X} case X of _|_ then true else false end end
@@ -912,46 +916,53 @@ fun {IsList X} X==nil orelse {IsCons X} end
 
 После дополнения скелета мы получим следующую функцию:
 
+\begin{lstlisting}
 fun {LengthL Xs}
-case Xs
-of nil then 0
-[] X|Xr andthen {IsList X} then
-{LengthL X}+{LengthL Xr}
-[] X|Xr then
-1+{LengthL Xr}
+   case Xs
+   of nil then 0
+   [] X|Xr andthen {IsList X} then
+      {LengthL X}+{LengthL Xr}
+   [] X|Xr then
+      1+{LengthL Xr}
+   end
 end
-end
+\end{lstlisting}
 
 Два примера вызовов:
 
+\begin{lstlisting}
 X=[[1 2] 4 nil [[5] 10]]
 {Browse {LengthL X}}
 {Browse {LengthL [X X]}}
+\end{lstlisting}
 
 Каким будет результат этих вызовов?
 
-Использование различных типов определений для вложенных списков даст различные по размеру функции определения длины. Например, определим тип <NestedList2 T> таким образом:
+Использование различных типов определений для вложенных списков даст различные по размеру функции определения длины. Например, определим тип \lstinline!$\langle$NestedList2 T$\rangle$! таким образом:
 
-hNestedList2 Ti
-::= nil
-| hNestedList2 Ti '| ' hNestedList2 Ti
-| T
+\begin{tabular}{lrl}
+  \lstinline!$\langle$NestedList2 T$\rangle$! & \lstinline!::=! & \lstinline!nil! \\
+  & \lstinline!|! & \lstinline!$\langle$NestedList2 T$\rangle$ $'$|$'$ $\langle$NestedList2 T$\rangle$! \\
+  & \lstinline!|! & \lstinline!T!
+\end{tabular}
 
-Опять же, мы должны добавить условие, что T не является ни nil-ом и ни cons-ом. Заметьте тонкую разницу между <NestedList T> и <NestedList2 T>! Следование определению <NestedList2 T> даст отличную и более простую функцию LengthL2:
+Опять же, мы должны добавить условие, что \lstinline!T! не является ни \lstinline!nil!-ом и ни \lstinline!cons!-ом. Заметьте тонкую разницу между \lstinline!$\langle$NestedList T$\rangle$! и \lstinline!$\langle$NestedList2 T$\rangle$!! Следование определению \lstinline!$\langle$NestedList2 T$\rangle$! даст отличную и более простую функцию \lstinline!LengthL2!:
 
+\begin{lstlisting}
 fun {LengthL2 Xs}
-case Xs
-of nil then 0
-[] X|Xr then
-{LengthL2 X}+{LengthL2 Xr}
-else 1 end
+   case Xs
+   of nil then 0
+   [] X|Xr then
+      {LengthL2 X}+{LengthL2 Xr}
+   else 1 end
 end
+\end{lstlisting}
 
-Какая разница между LengthL и LengthL2? Мы можем вывести эту разницу сравнив типы <NestedList T> и <NestedList2 T>. <NestedList T> всегда будет списком, в то время как <NestedList2 T> может также быть типом T. Поэтому вызов {LengthL2 foo} допустим (вернёт 1), в то время как {LengthL foo} недопустим (породит исключение). Такое поведение разумно рассмотреть как ошибку в LengthL2.
+Какая разница между \lstinline!LengthL! и \lstinline!LengthL2!? Мы можем вывести эту разницу сравнив типы \lstinline!$\langle$NestedList T$\rangle$! и \lstinline!$\langle$NestedList2 T$\rangle$!. \lstinline!$\langle$NestedList T$\rangle$! \emph{всегда} будет списком, в то время как \lstinline!$\langle$NestedList2 T$\rangle$! может также быть типом \lstinline!T!. Поэтому вызов \lstinline!{LengthL2 foo}! допустим (вернёт $1$), в то время как \lstinline!{LengthL foo}! недопустим (породит исключение). Такое поведение разумно рассмотреть как ошибку в \lstinline!LengthL2!.
 
-Здесь мы изучили важный урок. Важно определить рекурсивный тип до написания, использующей его, рекурсивной функции. Иначе можно легко обмануться, казалось бы, простой и в то же время неверной функцией. Это остаётся в силе даже для таких функциональных языков выполняющих выведение типа, как Standard ML и Haskell. Выведение типа может проверить что рекурсивный тип используется корректно, но ответственность за архитектуру рекурсивного типа несёт программист.
+Здесь мы изучили важный урок. Важно определить рекурсивный тип до написания, использующей его, рекурсивной функции. Иначе можно легко обмануться, казалось бы, простой и в то же время неверной функцией. Это остаётся в силе даже для таких функциональных языков выполняющих выведение типа, как Standard ML и Haskell. Выведение типа может проверить что рекурсивный тип используется \emph{корректно}, но ответственность за \emph{архитектуру} рекурсивного типа несёт программист.
 
-Сортировка слиянием
+\subsubsection{Сортировка слиянием}
 
 Мы определяем функцию, получающую список чисел или атомов и возвращающую новый список, элементы которого отсортированы в порядке возрастания. Он использует оператор сравнения <, поэтому все элементы должны быть одного типа (все целочисленные, все вещественные или все атомы). Мы используем алгоритм сортировки слиянием, он эффективен и легко может быть запрограммирован в декларативной модели. Алгоритм сортировки слиянием основан на простой стратегии названной как "разделяй-и-властвуй".
 
